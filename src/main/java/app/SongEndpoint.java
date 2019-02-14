@@ -1,5 +1,6 @@
 package app;
 
+import bd.DataBase;
 import io.spring.soap.getsongs.GetSongRequest;
 import io.spring.soap.getsongs.GetSongResponse;
 import io.spring.soap.getsongs.SongType;
@@ -24,6 +25,9 @@ public class SongEndpoint {
     public GetSongResponse getSong(@RequestPayload GetSongRequest request) {
         GetSongResponse response = new GetSongResponse();
 
+        // TEST BDD
+        DataBase bdd = new DataBase();
+        bdd.connect();
         // TEST
         SongType st = new SongType();
         st.setAlbum("Five");
