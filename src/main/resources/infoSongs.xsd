@@ -1,0 +1,30 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://spring.io/SOAP/GetInfoSongs"
+           targetNamespace="http://spring.io/SOAP/GetInfoSongs" elementFormDefault="qualified">
+
+
+    <xs:element name="getInfoSongIRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getInfoSongResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="SongInfo" type="tns:songTypeInfo"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="songTypeInfo">
+        <xs:sequence>
+            <xs:element name="title" type="xs:string" />
+            <xs:element name="artiste" type="xs:string" />
+            <xs:element name="album" type="xs:string" />
+            <xs:element name="duree" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>
