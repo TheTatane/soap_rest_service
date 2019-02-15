@@ -5,15 +5,16 @@ import java.io.FileWriter;
 
 public class FileRecord {
 
-    public FileRecord()
+    private String name_file;
+    public FileRecord(String name)
     {
-
+        name_file=name;
     }
 
     public void saveXML(String data)
     {
         //Create file
-        File file = new File("data.xml");
+        File file = new File(name_file);
 
         try{
             FileWriter fr = new FileWriter(file);
