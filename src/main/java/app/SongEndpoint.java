@@ -9,6 +9,7 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+import rest.RestService;
 
 import java.sql.Array;
 import java.sql.ResultSet;
@@ -54,15 +55,19 @@ public class SongEndpoint {
             }
             bdd.close();
 
+            /* TEST */
+            RestService restService = new RestService();
+            restService.launchRest(" ");
+
         } catch (Exception e)
         {
-            e.printStackTrace();;
+            e.printStackTrace();
         }
 
         if ((SongList.size() == 0))
         {
             //TO DO REST requête
-            System.out.println("Not Found");
+            System.out.println("Not Found Song Artist");
         }
 
 
