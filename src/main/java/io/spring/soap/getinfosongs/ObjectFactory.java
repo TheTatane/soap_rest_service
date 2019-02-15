@@ -37,11 +37,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GetInfoSongIRequest }
+     * Create an instance of {@link GetInfoSongRequest }
      * 
      */
-    public GetInfoSongIRequest createGetInfoSongIRequest() {
-        return new GetInfoSongIRequest();
+    public GetInfoSongRequest createGetInfoSongRequest() {
+        return new GetInfoSongRequest();
     }
 
     /**

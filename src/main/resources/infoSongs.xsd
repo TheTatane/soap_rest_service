@@ -2,7 +2,7 @@
            targetNamespace="http://spring.io/SOAP/GetInfoSongs" elementFormDefault="qualified">
 
 
-    <xs:element name="getInfoSongIRequest">
+    <xs:element name="getInfoSongRequest">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="name" type="xs:string"/>

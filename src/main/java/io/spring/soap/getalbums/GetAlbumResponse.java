@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
 
 
 /**
@@ -42,7 +43,7 @@ import javax.xml.bind.annotation.XmlType;
 public class GetAlbumResponse {
 
     @XmlElement(required = true)
-    protected Album album;
+    protected ArrayList<Album> album;
 
     /**
      * Gets the value of the album property.
@@ -52,19 +53,19 @@ public class GetAlbumResponse {
      *     {@link Album }
      *     
      */
-    public Album getAlbum() {
+    public ArrayList<Album> getAlbum() {
         return album;
     }
 
     /**
      * Sets the value of the album property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link Album }
      *     
      */
-    public void setAlbum(Album value) {
+    public void setAlbum(ArrayList<Album> value) {
         this.album = value;
     }
 

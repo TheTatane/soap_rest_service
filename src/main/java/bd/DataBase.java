@@ -30,6 +30,16 @@ public class DataBase {
         }
     }
 
+    public void close()
+    {
+        try{
+            _con.close();
+        }catch (Exception e) {
+            System.out.println("Unalble to close MySQL connection");
+            e.printStackTrace();
+        }
+    }
+
     public ResultSet execQuerry(String quer) throws Exception
     {
         Statement stmt = _con.createStatement();

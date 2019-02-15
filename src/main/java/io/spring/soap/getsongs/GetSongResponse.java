@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
 
 
 /**
@@ -42,7 +43,7 @@ import javax.xml.bind.annotation.XmlType;
 public class GetSongResponse {
 
     @XmlElement(required = true)
-    protected SongType song;
+    protected ArrayList<SongType> song;
 
     /**
      * Gets the value of the song property.
@@ -52,19 +53,19 @@ public class GetSongResponse {
      *     {@link SongType }
      *     
      */
-    public SongType getSong() {
+    public ArrayList<SongType> getSong() {
         return song;
     }
 
     /**
      * Sets the value of the song property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link SongType }
      *     
      */
-    public void setSong(SongType value) {
+    public void setSong(ArrayList<SongType> value) {
         this.song = value;
     }
 

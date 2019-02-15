@@ -10,6 +10,10 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
+import java.sql.Array;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+
 
 @Endpoint
 public class SongEndpoint {
@@ -25,16 +29,44 @@ public class SongEndpoint {
     public GetSongResponse getSong(@RequestPayload GetSongRequest request) {
         GetSongResponse response = new GetSongResponse();
 
-        // TEST BDD
-        DataBase bdd = new DataBase();
-        bdd.connect();
-        // TEST
-        SongType st = new SongType();
-        st.setAlbum("Five");
-        st.setArtiste("Hollywood Undead");
-        st.setTitle("Riot");
+        ArrayList<SongType> SongList = new ArrayList<SongType>();
+        ResultSet rs;
 
-        response.setSong(st);
+
+        try
+        {
+            // TEST BDD
+            DataBase bdd = new DataBase();
+            bdd.connect();
+            rs = bdd.execQuerry("SELECT tt.title, al.title_album, ar.name_artist\n" +
+                    "FROM Album al, AlbumContent ac, Title tt, Artist ar\n" +
+                    "WHERE al.id_album=ac.id_album\n" +
+                    "AND ac.id_title=tt.id_title\n" +
+                    "AND ar.id_artist=al.id_artist\n"+
+                    "AND ar.name_artist='"+request.getName()+"'");
+            while (rs.next())
+            {
+                SongType st = new SongType();
+                st.setTitle(rs.getNString(1));
+                st.setAlbum(rs.getNString(2));
+                st.setArtiste(rs.getNString(3));
+                SongList.add(st);
+            }
+            bdd.close();
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();;
+        }
+
+        if ((SongList.size() == 0))
+        {
+            //TO DO REST requête
+            System.out.println("Not Found");
+        }
+
+
+        response.setSong(SongList);
 
         return response;
     }
