@@ -1,9 +1,9 @@
 package rest;
 
+import dom.Dom;
 import java.io.*;
 import java.net.*;
 import file.FileRecord;
-import jdk.nashorn.internal.runtime.Context;
 
 import java.util.Scanner;
 
@@ -15,12 +15,29 @@ public class RestService {
 
     }
 
+    /* For LAST.FM */
+    public String buildRequest (String name, String SAOPservice)
+    {
+        String method_API = "";
+        switch (SAOPservice)
+        {
+            case "getSongsByAuthor" : method_API="artist.gettoptracks"; break;
+            case "getAlbumsByAuthor" : method_API="artist.gettopalbums"; break;
+            case "getInfoForSongTitle" : method_API="track.getInfo"; break;
+            default: System.out.println("No match"); break;
+
+        }
+        return  "http://ws.audioscrobbler.com//2.0/?method="+method_API+"&artist="+name+"&api_key=99ee41d32b502e0928a4f8fedd78517c";
+    }
+
+
     public void launchRest(String name)
     {
         try {
 
             /* TEST */
-            URL url = new URL("http://ws.audioscrobbler.com//2.0/?method=artist.gettoptracks&artist=U2&api_key=99ee41d32b502e0928a4f8fedd78517c");
+            String url_custom = buildRequest("VALD","getSongsByAuthor");
+            URL url = new URL(url_custom);
             //Connection
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
@@ -37,8 +54,11 @@ public class RestService {
                     data += scanner.nextLine() + "\n";
                 }
 
-                FileRecord fileXML = new FileRecord("data.xml");
+                FileRecord fileXML = new FileRecord("save_data.xml");
                 fileXML.saveXML(data);
+
+                Dom dom = new Dom (fileXML);
+                dom.domArtist();
             }
             else
                 System.out.println("Error HTTP");

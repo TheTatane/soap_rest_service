@@ -26,8 +26,7 @@ public class FileRecord {
             System.out.println("File XML not saved");
             e.printStackTrace();
         }
-
-
-
     }
+
+    public String getName () { return name_file; }
 }
