@@ -16,7 +16,7 @@ public class RestService {
     }
 
     /* For LAST.FM */
-    public String buildRequest (String name, String SAOPservice)
+    public String buildRequestLFM (String name, String SAOPservice)
     {
         String method_API = "";
         switch (SAOPservice)
@@ -31,12 +31,28 @@ public class RestService {
     }
 
 
+    /* For MusicBrainz */
+    public String buildRequestMB (String name, String SAOPservice)
+    {
+        String method_API = "";
+        switch (SAOPservice)
+        {
+            case "getSongsByAuthor" : method_API=""; break;
+            case "getAlbumsByAuthor" : method_API=""; break;
+            case "getInfoForSongTitle" : method_API=""; break;
+            default: System.out.println("No match"); break;
+
+        }
+        return  "https://musicbrainz.org/ws/2/recording?query="+method_API;
+    }
+
+
     public void launchRest(String name)
     {
         try {
 
             /* TEST */
-            String url_custom = buildRequest("VALD","getSongsByAuthor");
+            String url_custom = buildRequestLFM("VALD","getSongsByAuthor");
             URL url = new URL(url_custom);
             //Connection
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
