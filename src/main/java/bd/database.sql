@@ -3,32 +3,14 @@ CREATE TABLE IF NOT EXISTS Artist (
   name_artist VARCHAR (50)
 );
 
-CREATE TABLE IF NOT EXISTS GroupMusic (
-  id_group INTEGER PRIMARY KEY AUTO_INCREMENT,
-  name_group VARCHAR(50)
-);
-
-CREATE TABLE IF NOT EXISTS CompoGroup (
-  id_artist INTEGER,
-  id_group INTEGER,
-
-  FOREIGN KEY (id_artist)
-    REFERENCES Artist(id_artist),
-  FOREIGN KEY (id_group)
-    REFERENCES GroupMusic(id_group)
-);
-
 CREATE TABLE IF NOT EXISTS Album (
   id_album INTEGER PRIMARY KEY AUTO_INCREMENT,
   title_album VARCHAR(50),
   id_artist INTEGER,
-  id_group INTEGER,
   year_release INTEGER,
 
   FOREIGN KEY (id_artist)
-    REFERENCES Artist(id_artist),
-  FOREIGN KEY (id_group)
-    REFERENCES GroupMusic(id_group)
+    REFERENCES Artist(id_artist)
 );
 
 CREATE TABLE IF NOT EXISTS Title (
@@ -50,18 +32,15 @@ CREATE TABLE IF NOT EXISTS AlbumContent (
 /* INSERT TUPLES TESTS */
 INSERT INTO Artist (name_artist) VALUES ("VALD"); /* 1 */
 INSERT INTO Artist (name_artist) VALUES ("Ariana Grande"); /* 2 */
-INSERT INTO Artist (name_artist) VALUES ("Bono"); /* 3 */
+INSERT INTO Artist (name_artist) VALUES ("U2"); /* 3 */
 INSERT INTO Artist (name_artist) VALUES ("The Edge"); /* 4 */
 
-INSERT INTO GroupMusic (name_group) VALUES ("U2");
 
-INSERT INTO CompoGroup(id_group, id_artist) VALUES (1,3);
-INSERT INTO CompoGroup(id_group, id_artist) VALUES (1,4);
 
 INSERT INTO Album (title_album, id_artist, year_release) VALUES ("XEU", 1, 2018);
 INSERT INTO Album (title_album, id_artist, year_release) VALUES ("Agartha", 1, 2017);
 INSERT INTO Album (title_album, id_artist, year_release) VALUES ("Dangerous Woman", 2, 2016);
-INSERT INTO Album (title_album, id_group, year_release) VALUES ("Songs of Innoncence", 1, 2014);
+INSERT INTO Album (title_album, id_artist, year_release) VALUES ("Songs of Innoncence", 3, 2014);
 
 INSERT INTO Title (title) VALUES ("Seum");
 INSERT INTO Title (title) VALUES ("Gris");
