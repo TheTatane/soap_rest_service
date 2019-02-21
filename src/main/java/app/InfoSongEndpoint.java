@@ -33,7 +33,7 @@ public class InfoSongEndpoint {
         // TEST
         ArrayList<SongTypeInfo> SongInfoList = new ArrayList<SongTypeInfo>();
         ResultSet rs;
-        System.out.println(request.getName());
+        System.out.println(request.getNameTitle());
         try
         {
             // TEST BDD
@@ -44,7 +44,7 @@ public class InfoSongEndpoint {
                     "WHERE al.id_album=ac.id_album\n" +
                     "AND ac.id_title=tt.id_title\n" +
                     "AND ar.id_artist=al.id_artist\n"+
-                    "AND tt.title='"+request.getName()+"'");
+                    "AND tt.title='"+request.getNameTitle()+"'");
             while (rs.next())
             {
                 SongTypeInfo st = new SongTypeInfo();

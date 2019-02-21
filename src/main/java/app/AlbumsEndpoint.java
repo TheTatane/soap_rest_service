@@ -42,6 +42,7 @@ public class AlbumsEndpoint {
             execQuerry(request.getName());
         }
 
+
         response.setAlbum(AlbumList);
 
         return response;
@@ -62,7 +63,6 @@ public class AlbumsEndpoint {
             {
                 Album al = new Album();
                 al.setNameAlbum(rs.getNString(1));
-                al.setAnnee(0);
                 al.setNameArtiste(rs.getNString(2));
                 AlbumList.add(al);
             }
