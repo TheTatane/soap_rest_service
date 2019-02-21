@@ -9,7 +9,7 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
-
+import rest.RestService;
 
 
 import java.sql.*;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 @Endpoint
 public class InfoSongEndpoint {
     private static final String NAMESPACE_URI = "http://spring.io/SOAP/GetInfoSongs";
-
+    private ArrayList<SongTypeInfo> SongInfoList;
     @Autowired
     public InfoSongEndpoint() {
 
@@ -31,20 +31,39 @@ public class InfoSongEndpoint {
 
 
         // TEST
-        ArrayList<SongTypeInfo> SongInfoList = new ArrayList<SongTypeInfo>();
+        SongInfoList = new ArrayList<>();
+        execQuerry(request.getNameArtiste(),request.getNameTitle());
+
+        if ((SongInfoList.size() == 0))
+        {
+            //REST requête
+            RestService rest = new RestService();
+            rest.parseDom(request.getNameArtiste(),"getAlbumsByAuthor");
+
+            System.out.println("PASSAGE 2");
+            execQuerry(request.getNameArtiste(),request.getNameTitle());
+        }
+
+        response.setSongInfo(SongInfoList);
+
+        return response;
+    }
+
+    private void execQuerry(String name, String title)
+    {
         ResultSet rs;
-        System.out.println(request.getNameTitle());
         try
         {
-            // TEST BDD
+            System.out.println("DEBUG 2");
             DataBase bdd = new DataBase();
             bdd.connect();
-            rs = bdd.execQuerry("SELECT tt.title, al.title_album, ar.name_artist, ac.title_duration\n" +
-                    "FROM Album al, AlbumContent ac, Title tt, Artist ar\n" +
-                    "WHERE al.id_album=ac.id_album\n" +
-                    "AND ac.id_title=tt.id_title\n" +
-                    "AND ar.id_artist=al.id_artist\n"+
-                    "AND tt.title='"+request.getNameTitle()+"'");
+            rs = bdd.execQuerry("SELECT tt.title, al.title_album, ar.name_artist, tt.title_duration\n" +
+                    "FROM Album al, Title tt, Artist ar\n" +
+                    "WHERE al.id_album=tt.id_album\n" +
+                    "AND ar.id_artist=al.id_artist\n" +
+                    "AND ar.name_artist='"+name+"'\n"+
+                    "AND tt.title='"+title+"'");
+
             while (rs.next())
             {
                 SongTypeInfo st = new SongTypeInfo();
@@ -56,21 +75,10 @@ public class InfoSongEndpoint {
             }
             bdd.close();
 
-        } catch (Exception e)
+        }catch (Exception e)
         {
-            e.printStackTrace();;
+            e.printStackTrace();
         }
-
-        if ((SongInfoList.size() == 0))
-        {
-            //TO DO REST requête
-            System.out.println("Not Found Title");
-        }
-
-
-        response.setSongInfo(SongInfoList);
-
-
-        return response;
     }
+
 }

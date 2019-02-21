@@ -1,35 +1,21 @@
 package rest;
 
+import dom.AlbumType;
 import dom.Dom;
 import java.io.*;
 import java.net.*;
 import file.FileRecord;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 
 public class RestService {
 
-    public RestService()
-    {
+    private FileRecord fileXML;
 
-    }
-
-    /* For LAST.FM */
-    public String buildRequestLFM (String name, String SAOPservice)
-    {
-        String method_API = "";
-        switch (SAOPservice)
-        {
-            case "getSongsByAuthor" : method_API="artist.gettoptracks"; break;
-            case "getAlbumsByAuthor" : method_API="artist.gettopalbums"; break;
-            case "getInfoForSongTitle" : method_API="track.getInfo"; break;
-            default: System.out.println("No match"); break;
-
-        }
-        return  "http://ws.audioscrobbler.com//2.0/?method="+method_API+"&artist="+name+"&api_key=99ee41d32b502e0928a4f8fedd78517c";
-    }
-
+    public RestService() { }
 
     /* For MusicBrainz */
     public String buildRequestMB (String name, String SAOPservice)
@@ -37,13 +23,11 @@ public class RestService {
         String method_API = "";
         switch (SAOPservice)
         {
-            case "getSongsByAuthor" : method_API=""; break;
-            case "getAlbumsByAuthor" : method_API=""; break;
-            case "getInfoForSongTitle" : method_API=""; break;
+            case "getSongsByAlbums" : method_API="recording/?query=reid:"+name; break;
+            case "getAlbumsByAuthor" : method_API="release/?query=artist:"+name+"&limit=4"; break;
             default: System.out.println("No match"); break;
-
         }
-        return  "https://musicbrainz.org/ws/2/recording?query="+method_API;
+        return  "https://musicbrainz.org/ws/2/"+method_API;
     }
 
 
@@ -51,8 +35,7 @@ public class RestService {
     {
         try {
 
-            /* TEST */
-            String url_custom = buildRequestLFM(name,SAOPservice);
+            String url_custom = buildRequestMB(name, SAOPservice);
             URL url = new URL(url_custom);
             //Connection
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -60,37 +43,76 @@ public class RestService {
             //Set GET mode
             con.setRequestMethod("GET");
 
-            if(con.getResponseCode() == HttpURLConnection.HTTP_OK)
+            boolean ok = false;
+            String data = "";
+
+            //While result is not good
+            while (!ok)
             {
-                //Result
-                Scanner scanner = new Scanner(new InputStreamReader(con.getInputStream()));
-                String data="";
-
-                while (scanner.hasNextLine()) {
-                    data += scanner.nextLine() + "\n";
-                }
-
-                FileRecord fileXML = new FileRecord("save_data.xml");
-                fileXML.saveXML(data);
-
-                Dom dom = new Dom (fileXML, name);
-
-                switch (SAOPservice)
+                if (con.getResponseCode() == HttpURLConnection.HTTP_OK)
                 {
-                    case "getSongsByAuthor" :  break;
-                    case "getAlbumsByAuthor" :  dom.domArtist();  break;
-                    case "getInfoForSongTitle" :  break;
-                    default: System.out.println("No match"); break;
+                    //Result
+                    Scanner scanner = new Scanner(new InputStreamReader(con.getInputStream()));
 
+                    while (scanner.hasNextLine())
+                    {
+                        String XString = scanner.nextLine();
+                        if (XString.contains("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>")) {
+                            data += XString + "\n";
+                            ok = true;
+                        } else {
+                            con = (HttpURLConnection) url.openConnection();
+                            //Set GET mode
+                            con.setRequestMethod("GET");
+                        }
+
+                    }
+
+                    if(ok)
+                    {
+                        fileXML = new FileRecord("save_data.xml");
+                        fileXML.saveXML(data);
+                    }
+
+                }
+                else
+                {
+                    System.out.println("Error HTTP");
+                    throw new IOException();
                 }
 
             }
-            else
-                System.out.println("Error HTTP");
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
+
+    public void parseDom (String name, String SAOPservice)
+    {
+
+        try {
+
+            ArrayList<AlbumType> codeAlbums = new ArrayList<>();
+
+            launchRest(name,SAOPservice);
+            Dom dom = new Dom(fileXML, name);
+
+            codeAlbums = dom.domArtistMb();
+            System.out.println(codeAlbums);
+
+            for(int i = 0 ; i<codeAlbums.size(); i++)
+            {
+                launchRest(codeAlbums.get(i).getId(),"getSongsByAlbums");
+                Dom dom2 = new Dom(fileXML, name);
+                dom2.domAlbumsMb(codeAlbums.get(i).getTitle());
+            }
+
+            System.out.println("END parseDom");
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }

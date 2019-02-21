@@ -18,7 +18,7 @@ import java.util.ArrayList;
 @Endpoint
 public class AlbumsEndpoint {
     private static final String NAMESPACE_URI = "http://spring.io/SOAP/GetAlbums";
-    private ArrayList<Album> AlbumList = new ArrayList<Album>();
+    private ArrayList<Album> AlbumList;
     @Autowired
     public AlbumsEndpoint() {
 
@@ -30,18 +30,18 @@ public class AlbumsEndpoint {
         GetAlbumResponse response = new GetAlbumResponse();
 
         // TEST
-
+        AlbumList = new ArrayList<>();
         execQuerry(request.getName());
 
         if ((AlbumList.size() == 0))
         {
-            //TO DO REST requête
+            //REST requête
             RestService rest = new RestService();
-            rest.launchRest(request.getName(),"getAlbumsByAuthor");
+            rest.parseDom(request.getName(),"getAlbumsByAuthor");
 
+            System.out.println("PASSAGE 2");
             execQuerry(request.getName());
         }
-
 
         response.setAlbum(AlbumList);
 
@@ -53,6 +53,7 @@ public class AlbumsEndpoint {
         ResultSet rs;
         try
         {
+            System.out.println("DEBUG 2");
             DataBase bdd = new DataBase();
             bdd.connect();
             rs = bdd.execQuerry("SELECT DISTINCT al.title_album, ar.name_artist\n" +
@@ -70,7 +71,7 @@ public class AlbumsEndpoint {
 
         } catch (Exception e)
         {
-            e.printStackTrace();;
+            e.printStackTrace();
         }
     }
 

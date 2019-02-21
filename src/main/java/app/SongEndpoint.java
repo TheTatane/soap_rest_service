@@ -19,7 +19,7 @@ import java.util.ArrayList;
 @Endpoint
 public class SongEndpoint {
     private static final String NAMESPACE_URI = "http://spring.io/SOAP/GetSongs";
-
+    ArrayList<SongType> SongList;
     @Autowired
     public SongEndpoint() {
 
@@ -30,21 +30,39 @@ public class SongEndpoint {
     public GetSongResponse getSong(@RequestPayload GetSongRequest request) {
         GetSongResponse response = new GetSongResponse();
 
-        ArrayList<SongType> SongList = new ArrayList<SongType>();
+        SongList = new ArrayList<>();
+        execQuerry(request.getName());
+
+        if ((SongList.size() == 0))
+        {
+            //TO DO REST requête
+            RestService rest = new RestService();
+            rest.parseDom(request.getName(),"getAlbumsByAuthor");
+
+            System.out.println("PASSAGE 2");
+            execQuerry(request.getName());
+        }
+
+        response.setSong(SongList);
+
+        return response;
+    }
+
+    private void execQuerry(String name)
+    {
         ResultSet rs;
-
-
         try
         {
-            // TEST BDD
+            System.out.println("DEBUG 2");
             DataBase bdd = new DataBase();
             bdd.connect();
+
             rs = bdd.execQuerry("SELECT tt.title, al.title_album, ar.name_artist\n" +
-                    "FROM Album al, AlbumContent ac, Title tt, Artist ar\n" +
-                    "WHERE al.id_album=ac.id_album\n" +
-                    "AND ac.id_title=tt.id_title\n" +
-                    "AND ar.id_artist=al.id_artist\n"+
-                    "AND ar.name_artist='"+request.getName()+"'");
+                    "FROM Album al, Title tt, Artist ar\n" +
+                    "WHERE al.id_album=tt.id_album\n" +
+                    "AND ar.id_artist=al.id_artist\n" +
+                    "AND ar.name_artist='"+name+"'\n");
+
             while (rs.next())
             {
                 SongType st = new SongType();
@@ -55,24 +73,9 @@ public class SongEndpoint {
             }
             bdd.close();
 
-            /* TEST */
-            RestService restService = new RestService();
-            restService.launchRest(request.getName(),"getSongRequest");
-
         } catch (Exception e)
         {
             e.printStackTrace();
         }
-
-        if ((SongList.size() == 0))
-        {
-            //TO DO REST requête
-            System.out.println("Not Found Song Artist");
-        }
-
-
-        response.setSong(SongList);
-
-        return response;
     }
 }
