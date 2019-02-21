@@ -15,18 +15,12 @@ CREATE TABLE IF NOT EXISTS Album (
 
 CREATE TABLE IF NOT EXISTS Title (
   id_title INTEGER PRIMARY KEY AUTO_INCREMENT,
-  title VARCHAR(50)
-);
-
-CREATE TABLE IF NOT EXISTS AlbumContent (
-  id_album INTEGER,
-  id_title INTEGER,
+  title VARCHAR(50),
   title_duration VARCHAR(6),
+  id_album INTEGER,
 
   FOREIGN KEY (id_album)
-    REFERENCES Album(id_album),
-  FOREIGN KEY (id_title)
-    REFERENCES Title(id_title)
+    REFERENCES Album(id_album)
 );
 
 /* INSERT TUPLES TESTS */
@@ -42,20 +36,11 @@ INSERT INTO Album (title_album, id_artist, year_release) VALUES ("Agartha", 1, 2
 INSERT INTO Album (title_album, id_artist, year_release) VALUES ("Dangerous Woman", 2, 2016);
 INSERT INTO Album (title_album, id_artist, year_release) VALUES ("Songs of Innoncence", 3, 2014);
 
-INSERT INTO Title (title) VALUES ("Seum");
-INSERT INTO Title (title) VALUES ("Gris");
-INSERT INTO Title (title) VALUES ("Je t'aime");
-INSERT INTO Title (title) VALUES ("Strip");
-INSERT INTO Title (title) VALUES ("Into you");
-INSERT INTO Title (title) VALUES ("Greedy");
-INSERT INTO Title (title) VALUES ("Volcano");
-INSERT INTO Title (title) VALUES ("Iris");
-
-INSERT INTO AlbumContent (id_album, id_title, title_duration) VALUES (1,1,"1:30");
-INSERT INTO AlbumContent (id_album, id_title, title_duration) VALUES (1,2,"1:30");
-INSERT INTO AlbumContent (id_album, id_title, title_duration) VALUES (2,3,"1:30");
-INSERT INTO AlbumContent (id_album, id_title, title_duration) VALUES (2,4,"1:30");
-INSERT INTO AlbumContent (id_album, id_title, title_duration) VALUES (3,5,"1:30");
-INSERT INTO AlbumContent (id_album, id_title, title_duration) VALUES (3,6,"1:30");
-INSERT INTO AlbumContent (id_album, id_title, title_duration) VALUES (4,7,"1:30");
-INSERT INTO AlbumContent (id_album, id_title, title_duration) VALUES (4,8,"1:30");
+INSERT INTO Title (title, id_album, title_duration) VALUES ("Seum",1,"1:30");
+INSERT INTO Title (title, id_album, title_duration) VALUES ("Gris",1,"1:30");
+INSERT INTO Title (title, id_album, title_duration) VALUES ("Je t'aime",2,"1:30");
+INSERT INTO Title (title, id_album, title_duration) VALUES ("Strip",2,"1:30");
+INSERT INTO Title (title, id_album, title_duration) VALUES ("Into you",3,"1:30");
+INSERT INTO Title (title, id_album, title_duration) VALUES ("Greedy",3,"1:30");
+INSERT INTO Title (title, id_album, title_duration) VALUES ("Volcano",4,"1:30");
+INSERT INTO Title (title, id_album, title_duration) VALUES ("Iris",4,"1:30");

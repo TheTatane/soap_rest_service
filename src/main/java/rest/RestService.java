@@ -47,12 +47,12 @@ public class RestService {
     }
 
 
-    public void launchRest(String name)
+    public void launchRest(String name, String SAOPservice)
     {
         try {
 
             /* TEST */
-            String url_custom = buildRequestLFM("VALD","getSongsByAuthor");
+            String url_custom = buildRequestLFM(name,SAOPservice);
             URL url = new URL(url_custom);
             //Connection
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -73,18 +73,24 @@ public class RestService {
                 FileRecord fileXML = new FileRecord("save_data.xml");
                 fileXML.saveXML(data);
 
-                Dom dom = new Dom (fileXML);
-                dom.domArtist();
+                Dom dom = new Dom (fileXML, name);
+
+                switch (SAOPservice)
+                {
+                    case "getSongsByAuthor" :  break;
+                    case "getAlbumsByAuthor" :  dom.domArtist();  break;
+                    case "getInfoForSongTitle" :  break;
+                    default: System.out.println("No match"); break;
+
+                }
+
             }
             else
                 System.out.println("Error HTTP");
-
-
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
+    
 }

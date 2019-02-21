@@ -40,6 +40,7 @@ public class DataBase {
         }
     }
 
+
     public ResultSet execQuerry(String quer) throws Exception
     {
         Statement stmt = _con.createStatement();

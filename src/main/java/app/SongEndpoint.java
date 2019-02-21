@@ -11,7 +11,7 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import rest.RestService;
 
-import java.sql.Array;
+
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
@@ -57,7 +57,7 @@ public class SongEndpoint {
 
             /* TEST */
             RestService restService = new RestService();
-            restService.launchRest(" ");
+            restService.launchRest(request.getName(),"getSongRequest");
 
         } catch (Exception e)
         {
