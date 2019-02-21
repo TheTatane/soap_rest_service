@@ -1,29 +1,33 @@
 package dom;
 
+
+import bd.DataBase;
+
 import java.io.File;
-import java.io.IOException;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import file.FileRecord;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-
 
 
 public class Dom {
 
     FileRecord file_XML;
+    ArrayList<String> listAlbums;
+    String nameRequest;
 
-    public Dom (FileRecord file_XML)
+    public Dom (FileRecord file_XML, String name)
     {
+        listAlbums = new ArrayList<String>();
+        nameRequest=name;
         this.file_XML = file_XML;
     }
 
@@ -46,43 +50,66 @@ public class Dom {
             Element racine = document.getDocumentElement();
             System.out.println(racine.getNodeName());
 
-            System.out.println(affiche(racine, ""));
+            String XMLschema = affiche(racine, "");
+            String insertQuerry ="";
+            System.out.println(listAlbums.size());
+
+            //Insert Artiste if not in DataBase
+            ResultSet rs;
+            ResultSet generatedKeys;
+            int id_artist = -1;
+            DataBase db = new DataBase();
+            db.connect();
+
+            rs = db.execQuerry("SELECT * FROM Artist WHERE name_artist ='"+nameRequest+"'");
+
+            while (rs.next()) { id_artist = rs.getInt(1); }
+
+
+            if (id_artist == -1)
+            {
+                generatedKeys = db.execPrepareQuerry("INSERT INTO Artist (name_artist) VALUES ('"+nameRequest+"')");
+                if (generatedKeys.next())
+                    id_artist = generatedKeys.getInt(1);
+            }
+
+            //Affichage
+            listAlbums.forEach((n) -> System.out.println("Album : " + n));
+
+            int finalId_artist = id_artist;
+
+            for (int i=0; i<4;i++)
+                db.execPrepareQuerry("INSERT IGNORE INTO Album (title_album, id_artist) VALUES ('"+listAlbums.get(i)+"',"+ finalId_artist +")");
+               // insertQuerry+="INSERT IGNORE INTO Album (title_album, id_artist) VALUES ('"+listAlbums.get(i)+"',"+ finalId_artist +");\n";
+
+            //listAlbums.forEach((n) -> insertQuerry.set(insertQuerry + "INSERT IGNORE INTO Album (title_album, id_artist) VALUES ('"+n+"',"+ finalId_artist +")\n"));
+            //System.out.println(insertQuerry);
+
+
+
 
         } catch (Exception e)
         {
-
+            e.printStackTrace();
         }
     }
 
-    public static String affiche(Node nd, String tab){
-        String str = new String();
+    private String affiche(Node nd, String tab){
+        String str = "";
 
         if(nd instanceof Element){
 
             Element element = (Element)nd;
 
-            //Récupération du noeud parcouru
-            str += "<" + nd.getNodeName();
+            if(nd.getNodeName().equals("album"))
+                str += " [YEEES] ";
 
-            //On test si le noeud possède des attributs
-            if(nd.getAttributes() != null && nd.getAttributes().getLength() > 0)
-            {
-                //Récupération de la liste des attributs
-                NamedNodeMap ListeAttributs = nd.getAttributes();
-
-                //Affichage des attributs pour chaque noeud
-                for(int i = 0; i < ListeAttributs.getLength(); i++)
-                {
-                    Node noeud = ListeAttributs.item(i);
-                    //On récupère le nom de l'attribut et son contenu
-                    str += " " + noeud.getNodeName() + "=\""+noeud.getNodeValue()+"\" ";
-                }
-            }
-            str += ">";
-
-            //Si le Noeud n'a qu'un enfant on récupère le texte
             if(nd.getChildNodes().getLength() == 1)
-                str += nd.getTextContent();
+            {
+                if(nd.getParentNode().getNodeName().equals("album") && nd.getNodeName().equals("name"))
+                    listAlbums.add(nd.getTextContent());
+            }
+
 
             //Récupére liste des Noeud enfants du noeud parcouru
             NodeList list = nd.getChildNodes();
@@ -97,14 +124,10 @@ public class Dom {
                     //Appel récursif à la méthode pour le traitement du nœud et de ses enfants
                     str += "\n " + tab2 + affiche(nd2, tab2);
             }
-
-            //Fermeture de la balise
-            if(nd.getChildNodes().getLength() < 2)
-                str += "</" + nd.getNodeName() + ">";
-            else
-                str += "\n" + tab +"</" + nd.getNodeName() + ">";
         }
 
         return str;
     }
+
+
 }
