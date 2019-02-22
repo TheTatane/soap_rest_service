@@ -38,7 +38,11 @@ public class InfoSongEndpoint {
         {
             //REST requête
             RestService rest = new RestService();
-            rest.parseDom(request.getNameArtiste(),"getAlbumsByAuthor");
+            int tmp = (int) ( Math.random() * 2 + 1);
+            if(tmp==1)
+                rest.parseDom(request.getNameArtiste(),"getAlbumsByAuthor", "dom");
+            else if (tmp==2)
+                rest.parseXSL(request.getNameArtiste(),request.getNameTitle(),"getAlbumsByAuthor", "xsl");
 
             System.out.println("PASSAGE 2");
             execQuerry(request.getNameArtiste(),request.getNameTitle());
@@ -57,7 +61,7 @@ public class InfoSongEndpoint {
             System.out.println("DEBUG 2");
             DataBase bdd = new DataBase();
             bdd.connect();
-            rs = bdd.execQuerry("SELECT tt.title, al.title_album, ar.name_artist, tt.title_duration\n" +
+            rs = bdd.execQuerry("SELECT DISTINCT tt.title, al.title_album, ar.name_artist, tt.title_duration\n" +
                     "FROM Album al, Title tt, Artist ar\n" +
                     "WHERE al.id_album=tt.id_album\n" +
                     "AND ar.id_artist=al.id_artist\n" +

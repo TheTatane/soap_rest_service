@@ -37,7 +37,11 @@ public class AlbumsEndpoint {
         {
             //REST requête
             RestService rest = new RestService();
-            rest.parseDom(request.getName(),"getAlbumsByAuthor");
+            int tmp = (int) ( Math.random() * 2 + 1);
+            if(tmp==1)
+                rest.parseDom(request.getName(),"getAlbumsByAuthor", "dom");
+            else if (tmp==2)
+                rest.parseXSL(request.getName(),"","getAlbumsByAuthor", "xsl");
 
             System.out.println("PASSAGE 2");
             execQuerry(request.getName());

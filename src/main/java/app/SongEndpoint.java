@@ -37,7 +37,11 @@ public class SongEndpoint {
         {
             //TO DO REST requête
             RestService rest = new RestService();
-            rest.parseDom(request.getName(),"getAlbumsByAuthor");
+            int tmp = (int) ( Math.random() * 2 + 1);
+            if(tmp==1)
+                rest.parseDom(request.getName(),"getAlbumsByAuthor", "dom");
+            else if (tmp==2)
+                rest.parseXSL(request.getName(),"","getAlbumsByAuthor", "xsl");
 
             System.out.println("PASSAGE 2");
             execQuerry(request.getName());
@@ -57,7 +61,7 @@ public class SongEndpoint {
             DataBase bdd = new DataBase();
             bdd.connect();
 
-            rs = bdd.execQuerry("SELECT tt.title, al.title_album, ar.name_artist\n" +
+            rs = bdd.execQuerry("SELECT DISTINCT tt.title, al.title_album, ar.name_artist\n" +
                     "FROM Album al, Title tt, Artist ar\n" +
                     "WHERE al.id_album=tt.id_album\n" +
                     "AND ar.id_artist=al.id_artist\n" +
