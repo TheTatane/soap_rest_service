@@ -115,7 +115,6 @@ public class Dom {
 
             if(nd.getNodeName().equals("release") && nd.getAttributes() != null && nd.getAttributes().getLength() > 0)
             {
-                System.out.println("OK ID");
                 //Récupération de la liste des attributs
                 NamedNodeMap ListeAttributs = nd.getAttributes();
 
@@ -138,8 +137,6 @@ public class Dom {
                 }
 
             }
-
-
 
             //Récupére liste des Noeud enfants du noeud parcouru
             NodeList list = nd.getChildNodes();
@@ -220,7 +217,6 @@ public class Dom {
 
             if(nd.getChildNodes().getLength() == 1)
             {
-                System.out.println("OK Node 2");
                 if(nd.getParentNode().getNodeName().equals("recording") && nd.getNodeName().equals("title"))
                 {
                     System.out.println("OK Node Title "+ nd.getTextContent());
@@ -228,7 +224,6 @@ public class Dom {
                 }
 
             }
-
 
             //Récupére liste des Noeud enfants du noeud parcouru
             NodeList list = nd.getChildNodes();
